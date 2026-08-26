@@ -1314,6 +1314,7 @@ export default function App() {
                       accent={secretStatus?.configured ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}
                     />
                   </div>
+                  <div className="flex justify-center py-2"><WeatherCard /></div>
 
                   <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
                     {/* Connection panel */}
