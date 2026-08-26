@@ -2060,6 +2060,9 @@ export default function App() {
                 </div>
               )}
 
+              {/* ============================================================ 404 FALLBACK */}
+              {!["overview","simulator","commands","analytics","logs"].includes(activeTab) && <Face404 message="Page Not Found" />}
+
               {/* ============================================================ ANALYTICS */}
               {activeTab === "analytics" && (
                 <div className="space-y-6">
