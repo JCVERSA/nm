@@ -1316,8 +1316,14 @@ export default function App() {
                     <Card title="Connection" icon={Activity} className="xl:col-span-3">
                       {status === "qr_ready" && qrUrl ? (
                         <div className="flex flex-col md:flex-row items-center gap-6 relative">
-                          <div className="relative p-4 bg-white rounded-2xl border-2 border-indigo-200 shadow-lg overflow-hidden shrink-0">
+                          <div className="relative p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-indigo-200 dark:border-indigo-800 shadow-lg overflow-hidden shrink-0">
                             <img src={qrUrl} alt="WhatsApp QR Code" className={`w-48 h-48 transition-all duration-300 ${qrTimeLeft <= 0 ? "filter blur-sm opacity-25 scale-95" : ""}`} />
+                            {(isRetrying || status === "connecting") && (
+                              <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm flex flex-col items-center justify-center text-center p-3 z-10">
+                                <BoxLoader active />
+                                <span className="text-[10px] font-bold text-indigo-300 mt-2">Generating QR / Refreshing...</span>
+                              </div>
+                            )}
                             {qrTimeLeft <= 0 && (
                               <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px] flex flex-col items-center justify-center text-center p-3">
                                 <Hourglass className="w-8 h-8 text-amber-400 animate-spin mb-1.5" />
