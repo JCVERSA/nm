@@ -46,6 +46,7 @@ import {
   Moon,
 } from "lucide-react";
 import BloomToggle from "./components/BloomToggle";
+import StarBackground from "./components/StarBackground";
 
 import {
   ResponsiveContainer,
@@ -1266,6 +1267,7 @@ export default function App() {
         )}
 
         {/* Content */}
+        {darkMode && <StarBackground />}
         <main className="flex-1 p-4 md:p-6 max-w-[1400px] w-full mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
