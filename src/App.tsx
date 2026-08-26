@@ -156,6 +156,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [botLang, setBotLang] = useState<"en" | "fr">("en");
+  const [contextOpen, setContextOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     try { return localStorage.getItem("nebula-dark") === "true"; } catch { return false; }
   });
