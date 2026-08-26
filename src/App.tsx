@@ -1865,6 +1865,7 @@ export default function App() {
                               {isSavingCode ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
                               Save Code
                             </button>
+                            <SlideButton label="Refresh" onClick={() => { fetchStatus(); addSystemLog("Refreshed command registry."); setShowSuccess(true); setSuccessMsg({title:"Refreshed", desc:"Registry updated."}); setTimeout(()=>setShowSuccess(false),3000);}} />
                           )
                         } className="flex flex-col h-full">
                           {selectedCommand ? (
