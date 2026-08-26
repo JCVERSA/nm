@@ -2635,6 +2635,7 @@ export default function App() {
         </main>
 
         {/* Footer */}
+        </main>
         <footer className="px-6 py-4 text-center text-slate-400 text-[11px] border-t border-slate-200 bg-white">
           <div className="flex flex-col md:flex-row items-center justify-between gap-2 max-w-[1400px] mx-auto">
             <span className="flex items-center gap-1.5">
