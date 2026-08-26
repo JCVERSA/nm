@@ -1880,6 +1880,7 @@ export default function App() {
                       <div className="xl:col-span-7">
                         <Card title={selectedCommand ? `Editing: ${config.prefix}${selectedCommand.name}.ts` : "Code Editor"} icon={Code2} action={
                           selectedCommand && (
+                            <>
                             <button
                               onClick={saveCommandCode}
                               disabled={isSavingCode}
@@ -1889,7 +1890,8 @@ export default function App() {
                               Save Code
                             </button>
                             <SlideButton label="Refresh" onClick={() => { fetchStatus(); addSystemLog("Refreshed command registry."); setShowSuccess(true); setSuccessMsg({title:"Refreshed", desc:"Registry updated."}); setTimeout(()=>setShowSuccess(false),3000);}} />
-                          )
+                          </>
+                        )
                         } className="flex flex-col h-full">
                           {selectedCommand ? (
                             <div className="flex flex-col gap-3 h-full min-h-[500px]">
