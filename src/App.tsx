@@ -2084,6 +2084,7 @@ export default function App() {
                 <TimeCloud />
               </div>
 
+              </div>
               {/* ============================================================ 404 FALLBACK */}
               {!["overview","simulator","commands","analytics","logs"].includes(activeTab) && <Face404 message="Page Not Found" />}
 
