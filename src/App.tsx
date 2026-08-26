@@ -1310,6 +1310,7 @@ export default function App() {
                     />
                   </div>
                   <div className="flex justify-center py-2"><WeatherCard /></div>
+                  <div className="flex justify-center py-2"><FolderCard /></div>
 
                   <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
                     {/* Connection panel */}
