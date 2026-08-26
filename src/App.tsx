@@ -2085,8 +2085,6 @@ export default function App() {
               <div className="flex justify-center my-4">
                 <TimeCloud />
               </div>
-
-              </div>
               {/* ============================================================ 404 FALLBACK */}
               {!["overview","simulator","commands","analytics","logs"].includes(activeTab) && <Face404 message="Page Not Found" />}
 
