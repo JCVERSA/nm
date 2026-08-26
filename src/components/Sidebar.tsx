@@ -1,4 +1,5 @@
 import { LayoutDashboard, MessageSquare, Terminal, BarChart3, Zap, Menu, X } from "lucide-react";
+import SidebarToggleIcon from "./SidebarToggleIcon";
 
 export default function Sidebar({ active, onChange, open, onToggle }: { active: string; onChange: (t: string) => void; open: boolean; onToggle: () => void }) {
   const items = [
@@ -11,7 +12,7 @@ export default function Sidebar({ active, onChange, open, onToggle }: { active: 
     <>
       {open && <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={onToggle} />}
       <aside className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-16 lg:w-20 bg-gradient-to-b from-slate-950 to-indigo-950/90 border-r border-indigo-800/30 flex flex-col items-center py-6 gap-1 shadow-2xl transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-        <button onClick={onToggle} className="lg:hidden p-2 mb-2 text-indigo-200 hover:text-white" aria-label="Close sidebar"><X className="w-5 h-5" /></button>
+        <button onClick={onToggle} className="lg:hidden p-2 mb-2 text-indigo-200 hover:text-white" aria-label="Toggle sidebar"><SidebarToggleIcon isOpen={open} className="text-indigo-200 w-6 h-6" /></button>
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-900/40 mb-6">
           <Zap className="w-5 h-5 text-white" />
         </div>
