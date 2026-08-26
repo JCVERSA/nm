@@ -1450,6 +1450,7 @@ export default function App() {
                             )}
                           </div>
 
+                          <ToggleSwitch label="Pair Ready" checked={status === "connecting" || status === "qr_ready"} onChange={() => {}} className="ml-2" />
                           <button onClick={retryConnection} disabled={isRetrying} className="px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
                             <RefreshCw className={`w-3.5 h-3.5 ${isRetrying ? "animate-spin" : ""}`} /> Retry Connection
                           </button>
