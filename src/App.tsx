@@ -1368,7 +1368,7 @@ export default function App() {
                           </div>
                           <div>
                             <h4 className="font-bold text-slate-900 text-sm">Establishing connection...</h4>
-                          <div className="mt-2"><Loader active={status === "connecting"} /></div>
+                          <div className="mt-2">{status === "connecting" ? <CrystalLoader active /> : <Loader active={false} />}</div>
                             <p className="text-xs text-slate-500 mt-1">Handshaking with WhatsApp Web. A QR code will appear shortly.</p>
                           </div>
                         </div>
