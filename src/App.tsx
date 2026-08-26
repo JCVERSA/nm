@@ -43,8 +43,9 @@ import {
   ChevronRight,
   Hourglass,
   Sun,
-  Moon
+  Moon,
 } from "lucide-react";
+import BloomToggle from "./components/BloomToggle";
 
 import {
   ResponsiveContainer,
@@ -1226,13 +1227,7 @@ export default function App() {
               {botLang === "fr" ? "FR" : "EN"}
             </button>
 
-            <button
-              onClick={() => setDarkMode((d) => !d)}
-              title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-              className="p-2 text-slate-500 hover:text-amber-500 hover:bg-amber-50 dark:hover:text-amber-300 dark:hover:bg-amber-950/30 rounded-xl transition cursor-pointer"
-            >
-              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
+            <BloomToggle checked={darkMode} onChange={(v) => setDarkMode(v)} />
 
             <button
               onClick={fetchStatus}
