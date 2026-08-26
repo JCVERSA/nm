@@ -6,14 +6,14 @@ const { getGroupSettings, updateGroupSettings } = require('../../database');
 // Toutes les features configurables par groupe
 const FEATURES = {
   // ── Protection ─────────────────────────────────────────────────
-  antilink:         { label: 'Anti-link',                emoji: '🔗', category: 'protection' },
-  antispam:         { label: 'Anti-spam',                emoji: '🚫', category: 'protection' },
-  antitag:          { label: 'Anti-tag',                 emoji: '🏷️',  category: 'protection' },
-  antigroupmention: { label: 'Anti @everyone',           emoji: '📢', category: 'protection' },
-  antibot:          { label: 'Anti-bot',                 emoji: '🤖', category: 'protection' },
-  anticall:         { label: 'Anti-call',                emoji: '📵', category: 'protection' },
-  antidelete:       { label: 'Anti-delete',              emoji: '🗑️',  category: 'protection' },
-  antiviewonce:     { label: 'Anti-viewonce',            emoji: '👁️',  category: 'protection' },
+  antilink:         { label: 'Anti-link',                emoji: '🔗', category: 'moderation' },
+  antispam:         { label: 'Anti-spam',                emoji: '🚫', category: 'moderation' },
+  antitag:          { label: 'Anti-tag',                 emoji: '🏷️',  category: 'moderation' },
+  antigroupmention: { label: 'Anti @everyone',           emoji: '📢', category: 'moderation' },
+  antibot:          { label: 'Anti-bot',                 emoji: '🤖', category: 'moderation' },
+  anticall:         { label: 'Anti-call',                emoji: '📵', category: 'moderation' },
+  antidelete:       { label: 'Anti-delete',              emoji: '🗑️',  category: 'moderation' },
+  antiviewonce:     { label: 'Anti-viewonce',            emoji: '👁️',  category: 'moderation' },
   // ── Modération ─────────────────────────────────────────────────
   slowmode:         { label: 'Slow mode',                emoji: '⏱️',  category: 'moderation', note: 'Configurer via .slowmode' },
   detect:           { label: 'Détection mots interdits', emoji: '🔍', category: 'moderation' },
