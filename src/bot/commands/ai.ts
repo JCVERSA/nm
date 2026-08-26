@@ -1,4 +1,5 @@
 import { BotCommand } from "../types.js";
+import { translate } from "../i18n.js";
 import { generateTextWithFallback } from "../geminiClient.js";
 
 const aiCommand: BotCommand = {
@@ -10,7 +11,8 @@ const aiCommand: BotCommand = {
     const prompt = context.args.join(" ");
     
     if (!prompt) {
-      await context.reply("❌ Please provide a prompt or question!\nExample: `.ai Explain Quantum Computing in 3 sentences`");
+      const t = (k: string) => translate("ai", k, context.lang || "en");
+      await context.reply(t("noPrompt"));
       return;
     }
 
@@ -18,10 +20,7 @@ const aiCommand: BotCommand = {
     const apiKey = process.env.GEMINI_API_KEY;
     
     if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.trim() === "") {
-      await context.reply(
-        "⚠️ *Gemini API Key is not configured on the server.*\n" +
-        "Please configure your `GEMINI_API_KEY` in the secrets or environment file."
-      );
+      await context.reply(t("noPrompt") + "\n" + "⚠️ *Gemini API Key missing* — configure GEMINI_API_KEY.");
       return;
     }
 
@@ -31,10 +30,10 @@ const aiCommand: BotCommand = {
         "You are Nebula Bot, an advanced WhatsApp multi-device bot assistant. Keep responses helpful, structured, concise, and clean for a messaging app interface. Use bolding, bullet points, and emojis appropriately.",
         "gemini-3.7-flash"
       );
-      await context.reply(`🌌 *Nebula AI Assistant*\n\n${answer}`);
+      await context.reply(`${translate("ai","replyHeader",context.lang||"en")}\n\n${answer}`);
     } catch (error: any) {
       console.error("Gemini AI Command Error:", error);
-      await context.reply(`❌ *Error contacting Gemini AI:* ${error.message || error}`);
+      await context.reply(`❌ *Error:* ${error.message || error}`);
     }
   }
 };

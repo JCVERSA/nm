@@ -156,6 +156,7 @@ export function buildAdapterContext(
     senderName: normalized.senderName,
     isOwner,
     isAdmin: false, // Updated downstream
+    lang: "en",
     prefix,
     commandName,
     args,

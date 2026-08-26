@@ -22,6 +22,7 @@ import downloadCommand from "./commands/download.js";
 import hidetagCommand from "./commands/hidetag.js";
 import antilinkCommand from "./commands/antilink.js";
 import antibotCommand from "./commands/antibot.js";
+import langCommand from "./commands/lang.js";
 import antitagCommand from "./commands/antitag.js";
 import helpCommand from "./commands/help.js";
 import swebCommand from "./commands/sweb.js";
@@ -70,6 +71,7 @@ const defaultCommands = [
   hidetagCommand,
   antilinkCommand,
   antibotCommand,
+  langCommand,
   antitagCommand,
   swebCommand,
   membersCommand,

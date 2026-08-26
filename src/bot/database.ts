@@ -10,6 +10,7 @@ export interface GroupSettings {
   antitag: boolean;
   antitagAction: "delete" | "kick";
   antibot: boolean;
+  language: "en" | "fr";
   welcome: boolean;
   welcomeMessage: string;
   goodbye: boolean;
@@ -27,6 +28,7 @@ const defaultGroupSettings: GroupSettings = {
   antitag: false,
   antitagAction: "delete",
   antibot: false,
+  language: "en",
   welcome: false,
   welcomeMessage: "👋 Welcome @user to our group *@group*! Enjoy your stay!",
   goodbye: false,

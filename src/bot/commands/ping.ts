@@ -1,4 +1,5 @@
 import { BotCommand } from "../types.js";
+import { translate } from "../i18n.js";
 
 const pingCommand: BotCommand = {
   name: "ping",
@@ -10,6 +11,7 @@ const pingCommand: BotCommand = {
     await context.react("🚀");
     const latency = Date.now() - startTime;
     
+    const t = (k: string) => translate("ping", k, context.lang || "en");
     await context.reply(
       `🤖 *Nebula Bot - Status*\n\n` +
       `⚡ *Latency:* ${latency}ms\n` +

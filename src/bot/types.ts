@@ -8,6 +8,7 @@ export interface BotCommandContext {
   commandName: string;
   args: string[];
   fullMessage: string;
+  lang?: string; // en | fr
   reply: (text: string, mediaUrl?: string) => Promise<any>;
   react: (emoji: string) => Promise<any>;
   downloadMedia?: () => Promise<Buffer | null>;

@@ -681,6 +681,7 @@ ${answer}` }, { quoted: msg });
           }
         };
 
+        const groupLang = isGroup ? (database.getGroupSettings(senderJid).language || getConfig().language || "en") : (getConfig().language || "en");
         const context: BotCommandContext = {
           sender: senderJid,
           senderName,
@@ -690,6 +691,7 @@ ${answer}` }, { quoted: msg });
           commandName,
           args,
           fullMessage: text,
+          lang: groupLang,
           reply: replyHandler,
           react: reactHandler,
           downloadMedia: mediaDownloader,

@@ -9,6 +9,7 @@ export interface BotConfig {
   newsletterUrl: string;
   newsletterName: string;
   sessionString: string;
+  language?: "en" | "fr";
 }
 
 export const defaultConfig: BotConfig = {
@@ -20,6 +21,7 @@ export const defaultConfig: BotConfig = {
   newsletterUrl: "https://whatsapp.com/channel/0029VaNebulaChannel",
   newsletterName: "Nebula Bot Official News",
   sessionString: "",
+  language: "en",
 };
 
 function getDataDir(): string {

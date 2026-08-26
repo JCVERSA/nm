@@ -147,6 +147,7 @@ export default function App() {
   });
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [botLang, setBotLang] = useState<"en" | "fr">("en");
   const [darkMode, setDarkMode] = useState(() => {
     try { return localStorage.getItem("nebula-dark") === "true"; } catch { return false; }
   });
@@ -1210,6 +1211,14 @@ export default function App() {
               <FileDown className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Download Project</span>
             </a>
+
+            <button
+              onClick={async () => { const next = botLang === "en" ? "fr" : "en"; setBotLang(next); try { await fetch("/api/bot/config", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({language:next})}); } catch(e){}}}
+              title={botLang === "fr" ? "Passer en anglais" : "Passer en français"}
+              className="p-2 text-slate-500 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:text-indigo-300 dark:hover:bg-indigo-950/30 rounded-xl transition cursor-pointer text-xs font-bold"
+            >
+              {botLang === "fr" ? "FR" : "EN"}
+            </button>
 
             <button
               onClick={() => setDarkMode((d) => !d)}
