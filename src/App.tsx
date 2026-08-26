@@ -238,6 +238,8 @@ export default function App() {
   const [docSearchQuery, setDocSearchQuery] = useState("");
   const [docSelectedCategory, setDocSelectedCategory] = useState("All");
   const [editorFilter, setEditorFilter] = useState("All");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState({ title: "Done", desc: "Success" });
   const [pairPhone, setPairPhone] = useState("");
   const [pairCode, setPairCode] = useState<string | null>(null);
   const [isPairing, setIsPairing] = useState(false);
@@ -1146,6 +1148,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 flex font-sans" id="app_root">
+      <SuccessAlert visible={showSuccess} title={successMsg.title} description={successMsg.desc} onClose={() => setShowSuccess(false)} />
       {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 shrink-0 bg-slate-950 border-r border-slate-800 sticky top-0 h-screen">
         {sidebarContent}
@@ -1418,7 +1421,7 @@ export default function App() {
                                   try {
                                     const res = await fetch("/api/bot/pair", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({phone: pairPhone}) });
                                     const data = await res.json();
-                                    if (data.success && data.code) setPairCode(data.code);
+                                    if (data.success && data.code) { setPairCode(data.code); setSuccessMsg({ title: "Pairing code ready", desc: "Enter this code in WhatsApp Linked Devices." }); setShowSuccess(true); setTimeout(() => setShowSuccess(false), 6000); }
                                   } catch (e: any) {}
                                   setIsPairing(false);
                                 }}
