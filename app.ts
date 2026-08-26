@@ -310,7 +310,7 @@ export function createApp(): express.Express {
         pairingSock.ev.on("creds.update", saveCreds);
       }
       if (state.creds && state.creds.registered) {
-        return res.json({ success: true, message: "Already registered — pairing not needed.", registered: true });
+        return res.status(409).json({ success: false, error: "Already registered / bot connected — stop bot or clear session before pairing.", registered: true });
       }
       const code = await new Promise((resolve, reject) => {
         const timeout = setTimeout(() => reject(new Error("Pairing timeout — connection did not reach connecting state within 15s.")), 15000);

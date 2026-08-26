@@ -1422,7 +1422,7 @@ export default function App() {
                                   } catch (e: any) {}
                                   setIsPairing(false);
                                 }}
-                                disabled={isPairing}
+                                disabled={isPairing || status === "connected"}
                                 className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg text-[10px] font-bold transition shadow-sm cursor-pointer"
                               >
                                 {isPairing ? "Generating..." : "Pair Code"}
@@ -1440,6 +1440,9 @@ export default function App() {
                               <div className="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-lg px-3 py-1.5 text-xs font-mono text-indigo-700 dark:text-indigo-300 tracking-widest select-all">
                                 {pairCode}
                               </div>
+                            )}
+                            {status === "connected" && (
+                              <span className="text-[10px] text-amber-600 font-bold">Bot is online — disconnect first to pair.</span>
                             )}
                           </div>
 
