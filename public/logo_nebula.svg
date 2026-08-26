@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">NebulaXnova AI Agent logo</title>
+  <desc id="desc">Futuristic N and X emblem with orbital ring and cosmic core.</desc>
+  <defs>
+    <radialGradient id="space" cx="50%" cy="45%" r="65%"><stop offset="0" stop-color="#17112f"/><stop offset="0.55" stop-color="#080811"/><stop offset="1" stop-color="#020205"/></radialGradient>
+    <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="0.35" stop-color="#d9dee8"/><stop offset="0.7" stop-color="#8d96a8"/><stop offset="1" stop-color="#f8fafc"/></linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6d28d9"/><stop offset="0.45" stop-color="#a855f7"/><stop offset="0.75" stop-color="#7c3aed"/><stop offset="1" stop-color="#c084fc"/></linearGradient>
+    <radialGradient id="core"><stop offset="0" stop-color="#ffffff"/><stop offset="0.18" stop-color="#c4b5fd"/><stop offset="0.5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#4c1d95" stop-opacity="0"/></radialGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="28"/></filter>
+    <clipPath id="orbClip"><circle cx="512" cy="455" r="295"/></clipPath>
+  </defs>
+  <rect width="1024" height="1024" rx="160" fill="url(#space)"/>
+  <circle cx="512" cy="455" r="300" fill="#6d28d9" opacity=".10" filter="url(#softGlow)"/>
+  <circle cx="512" cy="455" r="295" fill="url(#space)" stroke="#7c3aed" stroke-opacity=".45" stroke-width="2"/>
+  <g clip-path="url(#orbClip)" opacity=".22">
+    <path d="M210 510 C330 390 390 520 500 400 S690 310 820 450" fill="none" stroke="#8b5cf6" stroke-width="38" filter="url(#softGlow)"/>
+    <path d="M220 610 C350 500 430 650 560 520 S720 450 820 570" fill="none" stroke="#2563eb" stroke-width="24" filter="url(#softGlow)"/>
+  </g>
+  <circle cx="512" cy="455" r="350" fill="none" stroke="#7c3aed" stroke-width="2" opacity=".55"/>
+  <circle cx="512" cy="455" r="322" fill="none" stroke="#a855f7" stroke-width="1" opacity=".25"/>
+  <path d="M335 650 V330 C335 302 356 284 383 284 C405 284 421 294 436 313 L607 531 V650 H532 L409 494 V650 Z" fill="url(#silver)"/>
+  <path d="M335 650 V330 C335 302 356 284 383 284 C405 284 421 294 436 313 L607 531 V650 H532 L409 494 V650 Z" fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="4"/>
+  <path d="M565 330 L685 330 L548 476 L734 650 H620 L493 529 L400 650 H294 L457 458 L370 374 L443 294 L512 365 Z" fill="url(#violet)"/>
+  <path d="M565 330 L685 330 L548 476" fill="none" stroke="#f5d0fe" stroke-opacity=".7" stroke-width="5"/>
+  <ellipse cx="512" cy="455" rx="375" ry="105" transform="rotate(-12 512 455)" fill="none" stroke="#8b5cf6" stroke-width="17" opacity=".95" filter="url(#glow)"/>
+  <ellipse cx="512" cy="455" rx="375" ry="105" transform="rotate(-12 512 455)" fill="none" stroke="url(#violet)" stroke-width="7"/>
+  <circle cx="512" cy="455" r="56" fill="url(#core)" opacity=".9" filter="url(#glow)"/>
+  <circle cx="512" cy="455" r="25" fill="#050509" stroke="#a855f7" stroke-width="3"/>
+  <circle cx="512" cy="455" r="11" fill="#ffffff" filter="url(#glow)"/>
+  <g fill="#fff" filter="url(#glow)">
+    <path d="M512 95 l8 28 28 8-28 8-8 28-8-28-28-8 28-8z"/>
+    <path d="M512 790 l7 24 24 7-24 7-7 24-7-24-24-7 24-7z"/>
+  </g>
+  <g fill="#c4b5fd" filter="url(#glow)">
+    <circle cx="191" cy="360" r="6"/>
+    <circle cx="834" cy="555" r="6"/>
+    <circle cx="790" cy="300" r="4"/>
+    <circle cx="242" cy="610" r="4"/>
+  </g>
+</svg>
