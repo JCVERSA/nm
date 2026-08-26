@@ -16,6 +16,7 @@ export interface BotCommandContext {
 export interface BotCommand {
   name: string;
   category: string;
+  group?: string; // multi-level category: Core | Media | Moderation | AI | Utilities | General
   description: string;
   usage?: string;
   aliases?: string[];

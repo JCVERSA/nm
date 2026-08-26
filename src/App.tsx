@@ -41,7 +41,9 @@ import {
   ArrowRight,
   ExternalLink,
   ChevronRight,
-  Hourglass
+  Hourglass,
+  Sun,
+  Moon
 } from "lucide-react";
 
 import {
@@ -123,12 +125,12 @@ function StatCard({ icon: Icon, label, value, sub, accent }: { icon: any; label:
 
 function Card({ title, icon: Icon, action, children, className = "" }: { title?: string; icon?: any; action?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-white rounded-2xl border border-slate-200 shadow-sm ${className}`}>
+    <div className={`bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm ${className}`}>
       {title && (
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
             {Icon && <Icon className="w-4 h-4 text-indigo-500" />}
-            <h3 className="font-bold text-slate-900 text-sm">{title}</h3>
+            <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">{title}</h3>
           </div>
           {action}
         </div>
@@ -145,6 +147,9 @@ export default function App() {
   });
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    try { return localStorage.getItem("nebula-dark") === "true"; } catch { return false; }
+  });
   const [cmdSubView, setCmdSubView] = useState<"editor" | "reference">("editor");
 
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
@@ -231,6 +236,7 @@ export default function App() {
   // Docs
   const [docSearchQuery, setDocSearchQuery] = useState("");
   const [docSelectedCategory, setDocSelectedCategory] = useState("All");
+  const [editorFilter, setEditorFilter] = useState("All");
   const [copiedCommandName, setCopiedCommandName] = useState<string | null>(null);
 
   // Project ZIP as text (for environments where file downloads are blocked)
@@ -310,6 +316,13 @@ export default function App() {
   useEffect(() => {
     fetchToken();
   }, []);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    if (darkMode) html.classList.add("dark");
+    else html.classList.remove("dark");
+    try { localStorage.setItem("nebula-dark", darkMode ? "true" : "false"); } catch {}
+  }, [darkMode]);
 
   useEffect(() => {
     // Only query protected endpoints once we have acquired a token (or if session storage had it)
@@ -486,7 +499,13 @@ export default function App() {
 
   const retryConnection = async () => {
     setIsRetrying(true);
-    addSystemLog("🔌 Retrying QR Code Connection...");
+    addSystemLog("🔌 Retrying QR Code Connection... (clearing session auth cache)");
+    try {
+      await fetch("/api/bot/clear-auth", { method: "POST" });
+      addSystemLog("🗑️ Cleared session auth cache via server");
+    } catch (e: any) {
+      console.error("[Retry] Failed to clear auth cache:", e.message);
+    }
     setQrReceivedAt(Date.now());
     setQrTimeLeft(50);
     try {
@@ -1122,7 +1141,7 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 flex font-sans" id="app_root">
+    <div className="min-h-screen bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 flex font-sans" id="app_root">
       {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 shrink-0 bg-slate-950 border-r border-slate-800 sticky top-0 h-screen">
         {sidebarContent}
@@ -1191,6 +1210,14 @@ export default function App() {
               <FileDown className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Download Project</span>
             </a>
+
+            <button
+              onClick={() => setDarkMode((d) => !d)}
+              title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+              className="p-2 text-slate-500 hover:text-amber-500 hover:bg-amber-50 dark:hover:text-amber-300 dark:hover:bg-amber-950/30 rounded-xl transition cursor-pointer"
+            >
+              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
 
             <button
               onClick={fetchStatus}
@@ -1362,6 +1389,9 @@ export default function App() {
                           )}
                           <button onClick={() => setActiveTab("simulator")} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
                             <MessageSquare className="w-3.5 h-3.5" /> Open Simulator
+                          </button>
+                          <button onClick={retryConnection} disabled={isRetrying} className="px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
+                            <RefreshCw className={`w-3.5 h-3.5 ${isRetrying ? "animate-spin" : ""}`} /> Retry Connection
                           </button>
                           <a href="/api/bot/download-zip" className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
                             <FileDown className="w-3.5 h-3.5" /> Project ZIP
@@ -1660,8 +1690,21 @@ export default function App() {
                         <Card title="Command Registry" icon={Terminal} action={
                           <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-bold">{commands.length} Commands</span>
                         }>
+                          <div className="flex items-center gap-1.5 flex-wrap mb-3">
+                            {["All", ...Array.from(new Set(commands.map((cmd) => (cmd as any).group || cmd.category)))].map((grp) => (
+                              <button
+                                key={grp}
+                                onClick={() => setEditorFilter(grp)}
+                                className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition cursor-pointer select-none ${
+                                  editorFilter === grp ? "bg-indigo-600 text-white shadow-sm" : "bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200/60"
+                                }`}
+                              >
+                                {grp}
+                              </button>
+                            ))}
+                          </div>
                           <div className="space-y-2 max-h-[280px] overflow-y-auto pr-1">
-                            {commands.map((cmd) => (
+                            {commands.filter((cmd) => editorFilter === "All" || ((cmd as any).group || cmd.category) === editorFilter).map((cmd) => (
                               <button
                                 key={cmd.name}
                                 onClick={() => loadCommandCode(cmd)}
@@ -1680,7 +1723,7 @@ export default function App() {
                                 <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold shrink-0 ml-2 ${
                                   selectedCommand?.name === cmd.name ? "bg-indigo-500 text-white" : "bg-slate-100 text-slate-600"
                                 }`}>
-                                  {cmd.category}
+                                  {(cmd as any).group || cmd.category}
                                 </span>
                               </button>
                             ))}
@@ -1823,17 +1866,17 @@ export default function App() {
                         </div>
                       }>
                         <div className="flex items-center gap-1.5 flex-wrap mb-4">
-                          {["All", ...Array.from(new Set(commands.map((cmd) => cmd.category)))].map((cat) => (
+                          {["All", ...Array.from(new Set(commands.map((cmd) => (cmd as any).group || cmd.category)))].map((grp) => (
                             <button
-                              key={cat}
-                              onClick={() => setDocSelectedCategory(cat)}
+                              key={grp}
+                              onClick={() => setDocSelectedCategory(grp)}
                               className={`px-3 py-1.5 rounded-xl text-[11px] font-semibold transition cursor-pointer select-none ${
-                                docSelectedCategory === cat
+                                docSelectedCategory === grp
                                   ? "bg-indigo-600 text-white shadow-sm"
                                   : "bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200/60"
                               }`}
                             >
-                              {cat}
+                              {grp}
                             </button>
                           ))}
                         </div>
@@ -1851,7 +1894,7 @@ export default function App() {
                             <tbody className="divide-y divide-slate-100 text-xs">
                               {commands
                                 .filter((cmd) => {
-                                  const matchesCategory = docSelectedCategory === "All" || cmd.category === docSelectedCategory;
+                                  const matchesCategory = docSelectedCategory === "All" || ((cmd as any).group || cmd.category) === docSelectedCategory;
                                   const matchesSearch =
                                     cmd.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
                                     cmd.description.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
@@ -1868,7 +1911,7 @@ export default function App() {
                                           <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded text-xs">
                                             {config.prefix}{cmd.name}
                                           </span>
-                                          <span className="text-[9px] bg-indigo-50 text-indigo-600 font-bold px-1.5 py-0.5 rounded-full uppercase">{cmd.category}</span>
+                                          <span className="text-[9px] bg-indigo-50 text-indigo-600 font-bold px-1.5 py-0.5 rounded-full uppercase">{(cmd as any).group || cmd.category}</span>
                                         </div>
                                         {cmd.aliases && cmd.aliases.length > 0 && (
                                           <div className="flex items-center gap-1 flex-wrap">
@@ -1931,7 +1974,7 @@ export default function App() {
                             </tbody>
                           </table>
                           {commands.filter((cmd) => {
-                            const matchesCategory = docSelectedCategory === "All" || cmd.category === docSelectedCategory;
+                            const matchesCategory = docSelectedCategory === "All" || ((cmd as any).group || cmd.category) === docSelectedCategory;
                             const matchesSearch =
                               cmd.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
                               cmd.description.toLowerCase().includes(docSearchQuery.toLowerCase()) ||

@@ -21,10 +21,14 @@ import defineCommand from "./commands/define.js";
 import downloadCommand from "./commands/download.js";
 import hidetagCommand from "./commands/hidetag.js";
 import antilinkCommand from "./commands/antilink.js";
+import antibotCommand from "./commands/antibot.js";
 import antitagCommand from "./commands/antitag.js";
 import helpCommand from "./commands/help.js";
 import swebCommand from "./commands/sweb.js";
 import videoCommand from "./commands/video.js";
+import membersCommand from "./commands/members.js";
+import kickCommand from "./commands/kick.js";
+import promoteCommand from "./commands/promote.js";
 import { getCompiledPath } from "./commandCompiler.js";
 import { loadImportedCommands } from "./importedBridge.js";
 
@@ -65,12 +69,28 @@ const defaultCommands = [
   downloadCommand,
   hidetagCommand,
   antilinkCommand,
+  antibotCommand,
   antitagCommand,
   swebCommand,
+  membersCommand,
+  kickCommand,
+  promoteCommand,
   videoCommand,
 ];
 
+function deriveGroup(cmd: BotCommand): string {
+  const cat = cmd.category.toLowerCase();
+  if (cat.includes("admin") || cat.includes("moderation") || cat.includes("antilink") || cat.includes("antitag")) return "Moderation";
+  if (cat.includes("fun") || cat.includes("game") || cat.includes("meme") || cat.includes("roast") || cat.includes("dare") || cat.includes("truth") || cat.includes("rps")) return "Media";
+  if (cat.includes("ai") || cat.includes("creative") || cat.includes("gemini") || cat === "ai & creative") return "AI";
+  if (cat.includes("utility") || cat.includes("calc") || cat.includes("weather") || cat.includes("define") || cat.includes("quote") || cat.includes("download")) return "Utilities";
+  if (cat.includes("general") || cat.includes("ping") || cat.includes("help") || cat.includes("menu")) return "Core";
+  return "Core";
+}
+
 function register(cmd: BotCommand) {
+  const group = cmd.group || deriveGroup(cmd);
+  (cmd as any).group = group;
   commandsMap.set(cmd.name.toLowerCase(), cmd);
   if (cmd.aliases && Array.isArray(cmd.aliases)) {
     cmd.aliases.forEach((alias) => {

@@ -165,3 +165,33 @@ export function buildAdapterContext(
     downloadMedia
   };
 }
+
+/** Group management adapter helpers */
+export async function getGroupParticipants(sock: any, groupJid: string): Promise<any[]> {
+  try {
+    const meta = await sock.groupMetadata(groupJid);
+    return meta.participants || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+export async function kickGroupMember(sock: any, groupJid: string, participantJid: string): Promise<boolean> {
+  try {
+    await sock.groupParticipantsUpdate(groupJid, [participantJid], "remove");
+    return true;
+  } catch (e: any) {
+    console.error("[Adapter] Kick failed:", e.message);
+    return false;
+  }
+}
+
+export async function promoteGroupMember(sock: any, groupJid: string, participantJid: string): Promise<boolean> {
+  try {
+    await sock.groupParticipantsUpdate(groupJid, [participantJid], "promote");
+    return true;
+  } catch (e: any) {
+    console.error("[Adapter] Promote failed:", e.message);
+    return false;
+  }
+}

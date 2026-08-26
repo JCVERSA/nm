@@ -280,6 +280,17 @@ export function createApp(): express.Express {
   // ---------------------------------------------------------------------------
   // API: Clear Logs
   // ---------------------------------------------------------------------------
+  app.post("/api/bot/clear-auth", (req, res) => {
+    try {
+      if (fs.existsSync("nebula_auth_info")) {
+        fs.rmSync("nebula_auth_info", { recursive: true, force: true });
+      }
+      res.json({ success: true, message: "Session auth cache cleared." });
+    } catch (e: any) {
+      res.status(500).json({ success: false, error: e.message || "Failed to clear auth" });
+    }
+  });
+
   app.post("/api/bot/clear-logs", (req, res) => {
     clearLogs();
     res.json({ success: true });

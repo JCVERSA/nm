@@ -11,6 +11,8 @@ import { getCommand, initRegistry } from "./commandRegistry.js";
 import { BotCommandContext } from "./types.js";
 import { incrementCommandStats } from "./commandStats.js";
 import { database } from "./database.js";
+import { generateTextWithFallback } from "./geminiClient.js";
+import { detectLinks } from "./utils/antibot.js";
 
 const groupMetadataCache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_TTL = 30000; // 30 seconds cache
@@ -516,6 +518,22 @@ export async function startLiveBot(isManualStart = false) {
             }
           }
 
+          // 1b. Antibot Link Detection (using utility)
+          if (settings.antibot && !isSenderAdmin && !isOwner) {
+            const detection = detectLinks(text);
+            if (detection.detected) {
+              addLog(`🛡️ [Antibot] Link message detected from @${actualSenderNumber} in group ${senderJid} | invite: ${detection.isInvite}`);
+              if (isBotAdmin) {
+                await sock.sendMessage(senderJid, { delete: msg.key });
+                await sock.sendMessage(senderJid, {
+                  text: `⚠️ *Anti-bot:* Suspicious links are not allowed, @${actualSenderNumber}.`,
+                  mentions: [actualSenderJid]
+                });
+              }
+              continue;
+            }
+          }
+
           // 2. Antitag (Mass Mentions) Filtering
           if (settings.antitag && !isSenderAdmin && !isOwner) {
             const ctxInfo = msg.message?.extendedTextMessage?.contextInfo || messageContent?.extendedTextMessage?.contextInfo;
@@ -546,6 +564,30 @@ export async function startLiveBot(isManualStart = false) {
 
         // Allow owner to run commands on their own session, but ignore regular self messages that don't start with prefix
         if (isFromMe && !text.startsWith(prefix)) {
+          continue;
+        }
+
+        // In private chat, reply with AI directly if message lacks command prefix
+        if (!isGroup && text.trim().length > 0 && !text.startsWith(prefix)) {
+          try {
+            const apiKey = process.env.GEMINI_API_KEY;
+            if (apiKey && apiKey !== "MY_GEMINI_API_KEY" && apiKey.trim() !== "") {
+              await sock.sendPresenceUpdate("composing", senderJid);
+              const answer = await generateTextWithFallback(
+                text.trim(),
+                "You are Nebula Bot, a helpful WhatsApp assistant. Keep responses concise, friendly, and useful.",
+                "gemini-3.7-flash"
+              );
+              await sock.sendPresenceUpdate("paused", senderJid);
+              await sock.sendMessage(senderJid, { text: `🌌 *Nebula AI*
+
+${answer}` }, { quoted: msg });
+            } else {
+              await sock.sendMessage(senderJid, { text: "Hi! I'm Nebula Bot. Send me a question and I'll reply using AI." }, { quoted: msg });
+            }
+          } catch (e: any) {
+            await sock.sendMessage(senderJid, { text: `❌ AI reply failed: ${e.message || e}` }, { quoted: msg });
+          }
           continue;
         }
 
