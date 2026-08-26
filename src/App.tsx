@@ -1,4 +1,9 @@
 import { useState, useEffect, useRef, FormEvent } from "react";
+import Sidebar from "./components/Sidebar";
+import Topbar from "./components/Topbar";
+import GetStarted from "./components/GetStarted";
+import ChatBubble from "./components/ChatBubble";
+import MobileDock from "./components/MobileDock";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Bot,
@@ -1150,7 +1155,11 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 flex font-sans" id="app_root">
+    <div className="min-h-screen bg-black text-zinc-100 flex font-sans" id="app_root">
+      <Sidebar active={activeTab} onChange={(t) => setActiveTab(t as any)} open={sidebarOpen} onToggle={() => setSidebarOpen(s => !s)} />
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-20">
+        <Topbar title={TAB_TITLES[activeTab].title} subtitle={TAB_TITLES[activeTab].subtitle} onMenu={() => setSidebarOpen(true)} />
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-[1400px] w-full mx-auto">
       <SuccessAlert visible={showSuccess} title={successMsg.title} description={successMsg.desc} onClose={() => setShowSuccess(false)} />
       {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 shrink-0 bg-slate-950 border-r border-slate-800 sticky top-0 h-screen">
