@@ -1448,8 +1448,11 @@ export default function App() {
                               </button>
                             </div>
                             {pairCode && (
-                              <div className="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-lg px-3 py-1.5 text-xs font-mono text-indigo-700 dark:text-indigo-300 tracking-widest select-all">
-                                {pairCode}
+                              <div className="flex flex-col items-center gap-2">
+                                <PairSuccess active />
+                                <div className="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-lg px-3 py-1.5 text-xs font-mono text-indigo-700 dark:text-indigo-300 tracking-widest select-all">
+                                  {pairCode}
+                                </div>
                               </div>
                             )}
                             {status === "connected" && (
