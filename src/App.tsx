@@ -238,6 +238,9 @@ export default function App() {
   const [docSearchQuery, setDocSearchQuery] = useState("");
   const [docSelectedCategory, setDocSelectedCategory] = useState("All");
   const [editorFilter, setEditorFilter] = useState("All");
+  const [pairPhone, setPairPhone] = useState("");
+  const [pairCode, setPairCode] = useState<string | null>(null);
+  const [isPairing, setIsPairing] = useState(false);
   const [copiedCommandName, setCopiedCommandName] = useState<string | null>(null);
 
   // Project ZIP as text (for environments where file downloads are blocked)
@@ -1399,6 +1402,47 @@ export default function App() {
                           <button onClick={() => setActiveTab("simulator")} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
                             <MessageSquare className="w-3.5 h-3.5" /> Open Simulator
                           </button>
+                          <div className="flex flex-col gap-2 w-full sm:w-auto">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="tel"
+                                placeholder="Phone (E.164)"
+                                value={pairPhone}
+                                onChange={e => setPairPhone(e.target.value)}
+                                className="px-2 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-[10px] font-semibold text-slate-800 dark:text-slate-200 w-32 focus:outline-indigo-500"
+                              />
+                              <button
+                                onClick={async () => {
+                                  if (!pairPhone.replace(/\D/g, "").length) return;
+                                  setIsPairing(true); setPairCode(null);
+                                  try {
+                                    const res = await fetch("/api/bot/pair", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({phone: pairPhone}) });
+                                    const data = await res.json();
+                                    if (data.success && data.code) setPairCode(data.code);
+                                  } catch (e: any) {}
+                                  setIsPairing(false);
+                                }}
+                                disabled={isPairing}
+                                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg text-[10px] font-bold transition shadow-sm cursor-pointer"
+                              >
+                                {isPairing ? "Generating..." : "Pair Code"}
+                              </button>
+                              <button
+                                onClick={() => { navigator.clipboard.writeText(pairCode || ""); }}
+                                disabled={!pairCode}
+                                className="px-2 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-[10px] font-bold transition cursor-pointer disabled:opacity-40"
+                                title="Copy pairing code"
+                              >
+                                Copy
+                              </button>
+                            </div>
+                            {pairCode && (
+                              <div className="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-lg px-3 py-1.5 text-xs font-mono text-indigo-700 dark:text-indigo-300 tracking-widest select-all">
+                                {pairCode}
+                              </div>
+                            )}
+                          </div>
+
                           <button onClick={retryConnection} disabled={isRetrying} className="px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm cursor-pointer">
                             <RefreshCw className={`w-3.5 h-3.5 ${isRetrying ? "animate-spin" : ""}`} /> Retry Connection
                           </button>

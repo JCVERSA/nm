@@ -291,6 +291,51 @@ export function createApp(): express.Express {
     }
   });
 
+  // Pairing code endpoint (Baileys native)
+  app.post("/api/bot/pair", async (req, res) => {
+    try {
+      const rawPhone = (req.body && req.body.phone ? req.body.phone.toString() : "").replace(/\D/g, "");
+      if (!rawPhone || rawPhone.length < 10 || rawPhone.length > 15) {
+        return res.status(400).json({ success: false, error: "Valid E.164 phone number required (digits only, no +). Example: 6288888888888" });
+      }
+      const { state, saveCreds } = await useMultiFileAuthState("nebula_auth_info");
+      if (!pairingSock || pairingSock.end) {
+        pairingRequested = false;
+        pairingSock = makeWASocket({
+          auth: state,
+          printQRInTerminal: false,
+          logger: pino({ level: "silent" }),
+          browser: (require("@whiskeysockets/baileys").Browsers || { macOS: () => ({ name: "Nebula", version: "1.0", vendor: "Nebula" }) }).macOS("Chrome"),
+        });
+        pairingSock.ev.on("creds.update", saveCreds);
+      }
+      if (state.creds && state.creds.registered) {
+        return res.json({ success: true, message: "Already registered — pairing not needed.", registered: true });
+      }
+      const code = await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error("Pairing timeout — connection did not reach connecting state within 15s.")), 15000);
+        const listener = async (update) => {
+          const connection = update && update.connection ? update.connection : null;
+          if (connection === "connecting" && !(pairingSock.authState && pairingSock.authState.creds && pairingSock.authState.creds.registered) && !pairingRequested) {
+            pairingRequested = true;
+            clearTimeout(timeout);
+            try {
+              const pairCode = await pairingSock.requestPairingCode(rawPhone);
+              resolve(pairCode);
+            } catch (e) { reject(new Error("Pairing code request failed: " + (e && e.message ? e.message : e))); }
+            pairingSock.ev.off("connection.update", listener);
+          }
+        };
+        pairingSock.ev.on("connection.update", listener);
+      });
+      res.json({ success: true, code: code, phone: rawPhone, message: "Enter this code on WhatsApp: Settings → Linked Devices → Link a Device → Link with phone number instead" });
+    } catch (e) {
+      console.error("[Pair] Error:", e && e.message ? e.message : e);
+      res.status(500).json({ success: false, error: e && e.message ? e.message : "Pairing failed." });
+    }
+  });
+
+
   app.post("/api/bot/clear-logs", (req, res) => {
     clearLogs();
     res.json({ success: true });
@@ -599,6 +644,8 @@ IMPORTANT: Output ONLY the raw TypeScript code. No markdown wrapping (like \`\`\
 
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = require("@whiskeysockets/baileys");
 const pino = require("pino");
+let pairingSock = null;
+let pairingRequested = false;
 const { Boom } = require("@hapi/boom");
 const dotenv = require("dotenv");
 const path = require("path");
